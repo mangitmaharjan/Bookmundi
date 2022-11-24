@@ -1,0 +1,149 @@
+
+<script>
+$$ = {
+    addClass: function(selector, newclass){
+        document.querySelectorAll(selector).forEach(function(t){
+           t.classList.add(newclass) 
+        })
+    },
+    getData: function(selector, dataset){
+        $resp = [];
+        document.querySelectorAll(selector).forEach(function(t){
+            $resp.push(t.dataset[dataset])
+        })
+        return $resp;
+    },
+    addDom: function(selector, newdom){
+        document.querySelectorAll(selector).forEach(function(t){
+            t.innerHTML = newdom
+        })
+    },
+    getRequest: function(url, callback){
+        var xhr = new XMLHttpRequest();
+        xhr.open( "GET", url, false );
+        xhr.send( null );
+        callback(xhr.responseText)
+    },
+    postRequest: function(url, data, callback){
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", url);
+
+        xhr.setRequestHeader("Accept", "application/json");
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            callback(xhr.responseText);
+        }};       
+
+        xhr.send(data);
+    },
+    ajaxRequest: function(url, data, headers, callback){
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", url);
+        for (var key in headers) {
+            xhr.setRequestHeader(key, headers[key]);
+        }
+        xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            callback(xhr.responseText);
+        }};       
+
+        xhr.send(data);
+    },
+    getValue: function(selector){
+        $resp = [];
+        document.querySelectorAll(selector).forEach(function(t){
+            $allowed = ['input','select','checkbox'];
+            if($allowed.includes(t.tagName.toLowerCase())){
+                $resp.push(t.value);
+            }
+         })
+         return $resp;
+    },
+    setValue: function(selector, value){
+        document.querySelectorAll(selector).forEach(function(t){
+            $allowed = ['input','select','checkbox'];
+            if($allowed.includes(t.tagName.toLowerCase())){
+                t.value = value;
+            }
+         })
+    }
+}
+</script>
+<div class="old-class"></div>
+<div class="data" data-name="Mangit"></div>
+<div class="container"></div>
+<input type="text" class="inputi" value="asd">
+<input type="checkbox" class="input" name="vehicle1" value="Bike">
+
+
+<!-- Solution -->
+<script>
+    // Change the class name of any dom elements
+    $$.addClass('.old-class', 'new-class');
+
+    // Get datasets from dom elements
+    alert($$.getData('.data','name'));
+
+    // Inject new dom element
+    $$.addDom('.container','<a href="#">Button</a>');
+
+    // Make both ajax and get request
+    // Ajax    
+    $$.ajaxRequest("https://reqbin.com/echo/post/json",
+        {
+            "Id": 78912,
+            "Customer": "Jason Sweet",
+            "Quantity": 1,
+            "Price": 18.00
+        },
+        {
+            "Accept":"application/json",
+            "Content-Type":"application/json",
+        },
+        function(d){
+        alert(d)
+    });
+
+    //Get
+    $$.getRequest('https://reqres.in/api/users?page=2', function(data){
+        alert(data)
+    })
+
+
+    // Get and set values from input box/checkbox/select dropdown
+    // Get
+    alert($$.getValue('.input'));
+    // Set
+    $$.setValue('.input',100);
+</script>
+
+<!-- Solution 2 -->
+<!-- Make 3 POST requests at the same time which need to be resolved all at the same time.  -->
+<script>
+$$.postRequest("https://reqbin.com/echo/post/json",{
+        "Id": 78912,
+        "Customer": "Jason Sweet",
+        "Quantity": 1,
+        "Price": 18.00
+    }, function(d){
+    alert(d)
+});
+$$.postRequest("https://reqbin.com/echo/post/json",{
+        "Id": 78912,
+        "Customer": "Jason Sweet",
+        "Quantity": 1,
+        "Price": 18.00
+    }, function(d){
+    alert(d)
+});
+$$.postRequest("https://reqbin.com/echo/post/json",{
+        "Id": 78912,
+        "Customer": "Jason Sweet",
+        "Quantity": 1,
+        "Price": 18.00
+    }, function(d){
+    alert(d)
+});
+</script>
